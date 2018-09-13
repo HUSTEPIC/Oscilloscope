@@ -54,6 +54,8 @@
 
 #include <QLabel>
 #include <QMessageBox>
+#include "oscilloscope.h"
+#include <QVector>
 
 //! [0]
 MainWindow::MainWindow(QWidget *parent) :
@@ -61,6 +63,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_ui(new Ui::MainWindow),
     m_status(new QLabel),
     m_console(new Console),
+    m_oscilloscope(new Oscilloscope),
     m_settings(new SettingsDialog),
 //! [1]
     m_serial(new QSerialPort(this))
@@ -69,12 +72,19 @@ MainWindow::MainWindow(QWidget *parent) :
 //! [0]
     m_ui->setupUi(this);
     m_console->setEnabled(false);
-    setCentralWidget(m_console);
+
+    QSplitter *splitter= new QSplitter;
+    splitter->addWidget(m_oscilloscope);
+    splitter->addWidget(m_console);
+    splitter->setStretchFactor(0,8);
+    splitter->setStretchFactor(1,1);
+    setCentralWidget(splitter);
 
     m_ui->actionConnect->setEnabled(true);
     m_ui->actionDisconnect->setEnabled(false);
     m_ui->actionQuit->setEnabled(true);
     m_ui->actionConfigure->setEnabled(true);
+    m_ui->actionSwitchView->setEnabled(true);
 
     m_ui->statusBar->addWidget(m_status);
 
@@ -85,7 +95,7 @@ MainWindow::MainWindow(QWidget *parent) :
 //! [2]
     connect(m_serial, &QSerialPort::readyRead, this, &MainWindow::readData);
 //! [2]
-    connect(m_console, &Console::getData, this, &MainWindow::writeData);
+    //connect(m_console, &Console::getData, this, &MainWindow::writeData);
 //! [3]
 }
 //! [3]
@@ -155,7 +165,9 @@ void MainWindow::writeData(const QByteArray &data)
 void MainWindow::readData()
 {
     QByteArray data = m_serial->readAll();;
-    QByteArray tempdata=QByteArray();
+    QByteArray tempStrArr=QByteArray();
+    QVector <float> tempDataArr;
+
     char tempstr[20] ={'0'};
     qint32 tempvalue = 0;
 
@@ -171,14 +183,17 @@ void MainWindow::readData()
                     tempvalue=-((~tempvalue+1)&0x00ffffff);
                 }
                 voltage = tempvalue*(4500.0/8388608.0);
+
                 snprintf(tempstr,sizeof(tempstr)-1,"%2f\t",voltage);
-                tempdata.append(tempstr);
+                if((voltage>-300&&voltage<1)||(voltage>1&&voltage<300))tempDataArr.push_back(voltage);//画图
+                tempStrArr.append(tempstr);//显示到Console
             }
             i+=2;
         }
     }
 
-    m_console->putData(tempdata);
+    m_oscilloscope->getData(tempDataArr);
+    m_console->putData(tempStrArr);
 }
 //! [7]
 
@@ -191,6 +206,11 @@ void MainWindow::handleError(QSerialPort::SerialPortError error)
     }
 }
 //! [8]
+void MainWindow::pauseView(){
+    m_console->switchPuseEnabled();
+    m_oscilloscope->switchPuseEnabled();
+}
+
 
 void MainWindow::initActionsConnections()
 {
@@ -201,6 +221,7 @@ void MainWindow::initActionsConnections()
     connect(m_ui->actionClear, &QAction::triggered, m_console, &Console::clear);
     connect(m_ui->actionAbout, &QAction::triggered, this, &MainWindow::about);
     connect(m_ui->actionAboutQt, &QAction::triggered, qApp, &QApplication::aboutQt);
+    connect(m_ui->actionSwitchView,&QAction::triggered,this,&MainWindow::pauseView);
 }
 
 void MainWindow::showStatusMessage(const QString &message)

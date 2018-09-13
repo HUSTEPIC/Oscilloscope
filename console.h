@@ -66,6 +66,7 @@ public:
 
     void putData(QByteArray &data);
     void setLocalEchoEnabled(bool set);
+    void switchPuseEnabled();
 
 protected:
     void keyPressEvent(QKeyEvent *e) override;
@@ -75,6 +76,7 @@ protected:
 
 private:
     bool m_localEchoEnabled = false;
+    bool pauseEnabled=false;
 };
 
 #endif // CONSOLE_H

@@ -54,6 +54,7 @@
 #include <QScrollBar>
 #include <iostream>
 #include <string.h>
+#include "oscilloscope.h"
 
 Console::Console(QWidget *parent) :
     QPlainTextEdit(parent)
@@ -67,16 +68,22 @@ Console::Console(QWidget *parent) :
 
 void Console::putData(QByteArray &data)
 {
+    if(!pauseEnabled){
     insertPlainText(data);
 
 
     QScrollBar *bar = verticalScrollBar();
     bar->setValue(bar->maximum());
+    }
 }
 
 void Console::setLocalEchoEnabled(bool set)
 {
     m_localEchoEnabled = set;
+}
+
+void Console::switchPuseEnabled(){
+    pauseEnabled = !pauseEnabled;
 }
 
 void Console::keyPressEvent(QKeyEvent *e)

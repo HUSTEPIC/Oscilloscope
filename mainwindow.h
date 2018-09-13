@@ -57,6 +57,7 @@
 
 #include "console.h"
 #include "settingsdialog.h"
+#include "oscilloscope.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -75,6 +76,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void pauseView(void);
 
 private slots:
     void openSerialPort();
@@ -94,6 +96,7 @@ private:
     Ui::MainWindow *m_ui = nullptr;
     QLabel *m_status = nullptr;
     Console *m_console = nullptr;
+    Oscilloscope *m_oscilloscope = nullptr;
     SettingsDialog *m_settings = nullptr;
     QSerialPort *m_serial = nullptr;
 };
