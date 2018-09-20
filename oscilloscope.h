@@ -1,33 +1,38 @@
-#ifndef OSCILLOSCOPE_H
-#define OSCILLOSCOPE_H
+/**
+	@filename oscilloscope.h
+	@brief    oscilloscope module
+	@author   tzaiyang
+	Copyright (c) 2018 EPIC. All rights reserved.
+*/
+
+#ifndef OSCILLOSCOPE_H_
+#define OSCILLOSCOPE_H_
 
 #include <QWidget>
-#include "qcustomplot.h"
 #include <QVector>
-class Oscilloscope : public QWidget
-{
+#include "qcustomplot.h"
+class Oscilloscope : public QWidget {
     Q_OBJECT
 
-public:
+ public:
     explicit Oscilloscope(QWidget *parent = nullptr);
     ~Oscilloscope();
     void setupRealtimeDataDemo(QCustomPlot *customPlot);
-    void getData(QVector<float> &data);
+    void getData(const QVector<float> &data);
     void switchPuseEnabled();
 
-signals:
+ signals:
     void popData();
 
-private slots:
-    //添加实时数据槽
-    void realtimeDataSlot();
+ private slots:
+    void realtimeDataSlot();  // 添加实时数据槽
 
-private:
-    //定时器，周期调用realtimeDataSlot()槽，实现动态数据添加到曲线
+ private:
+    // 定时器，周期调用realtimeDataSlot()槽，实现动态数据添加到曲线
     QTimer dataTimer;
-    QCustomPlot *customPlot=nullptr;
+    QCustomPlot *customPlot = nullptr;
     float voltage;
-    bool pauseEnabled=false;
+    bool pauseEnabled = false;
 };
 
-#endif // OSCILLOSCOPE_H
+#endif  // OSCILLOSCOPE_H_
