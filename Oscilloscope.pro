@@ -1,7 +1,7 @@
 QT += widgets serialport charts printsupport
 requires(qtConfig(combobox))
 
-TARGET = terminal
+TARGET = Oscilloscope
 TEMPLATE = app
 
 SOURCES += \
@@ -24,7 +24,7 @@ FORMS += \
     settingsdialog.ui
 
 RESOURCES += \
-    terminal.qrc
+    Oscilloscope.qrc
 
-target.path = $$[QT_INSTALL_EXAMPLES]/serialport/terminal
-INSTALLS += target
+#target.path = $$[QT_INSTALL_EXAMPLES]/serialport/terminal
+#INSTALLS += target

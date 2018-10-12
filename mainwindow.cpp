@@ -185,7 +185,8 @@ void MainWindow::readData()
                 voltage = tempvalue*(4500.0/8388608.0);
 
                 snprintf(tempstr,sizeof(tempstr)-1,"%2f\t",voltage);
-                if((voltage>-300&&voltage<1)||(voltage>1&&voltage<300))tempDataArr.push_back(voltage);//画图
+                //if((voltage>-300&&voltage<1)||(voltage>1&&voltage<300))
+                    tempDataArr.push_back(voltage);//画图
                 tempStrArr.append(tempstr);//显示到Console
             }
             i+=2;

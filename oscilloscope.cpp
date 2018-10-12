@@ -108,5 +108,6 @@ void Oscilloscope::realtimeDataSlot() {
     // 就把8调整为比较大到值，比如要显示60秒，那就改成60。
     // 这时removeDataBefore(key-8)中的8也要改成60，否则曲线显示不完整。
     customPlot->xAxis->setRange(key+0.25, 8, Qt::AlignRight);  // 设定x轴的范围
-    if (!((count++)%4))customPlot->replot();
+    //if (!((count++)%4))
+        customPlot->replot();
 }
